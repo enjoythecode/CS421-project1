@@ -54,7 +54,7 @@ def error_offset(x_offset, y_offset, fixations):
     pass
 
 
-# noise
+# noise distortion
 import random
 
 def error_noise(y_noise_probability, y_noise, duration_noise, fixations):
@@ -81,8 +81,61 @@ def error_noise(y_noise_probability, y_noise, duration_noise, fixations):
     
     return results
 
-# shift
+# slope distortion
 
+def error_slope(d_slope, fixations):
+    
+    results = []
+    
+    for fix in fixations:
+        
+        x, y, duration = fix[0], fix[1], fix[2]
+
+        y_error = x * d_slope
+        y_final = y + y_error
+        
+        results.append([x, y_final, duration])
+        
+    return results
+
+# shift distortion
+
+def error_shift(d_shift, fixations):
+    
+    results = []
+    
+    for fix in fixations:
+        
+        x, y, duration = fix[0], fix[1], fix[2]
+
+        # same as error_slope, except the error grows further down the passage
+        y_error = y * d_slope
+        y_final = y + y_error
+        
+        results.append([x, y_final, duration])
+        
+    return results
+
+# within-line regression
+
+def error_withinline(regression_probability, fixations):
+    
+    results = []
+    
+    for fix in fixations:
+        
+        x, y, duration = fix[0], fix[1], fix[2]
+        if random.random() < regression_probability:
+    
+    return results
+
+# between-line regression
+
+def error_betweenline(fixations):
+    
+    results = []
+    
+    return results
 
 
 # droop
