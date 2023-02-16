@@ -109,7 +109,7 @@ def error_shift(d_shift, fixations):
         x, y, duration = fix[0], fix[1], fix[2]
 
         # same as error_slope, except the error grows further down the passage
-        y_error = y * d_slope
+        y_error = y * d_shift
         y_final = y + y_error
         
         results.append([x, y_final, duration])
@@ -126,6 +126,7 @@ def error_withinline(regression_probability, fixations):
         
         x, y, duration = fix[0], fix[1], fix[2]
         if random.random() < regression_probability:
+            pass
     
     return results
 
@@ -232,9 +233,9 @@ def draw_correction(Image_file, fixations, match_list):
         outline_color = (50, 255, 0, 0)
         
         if match_list[index] == 1:
-        	fill_color = (50, 255, 0, 220)
+            fill_color = (50, 255, 0, 220)
         else:
-        	fill_color = (255, 55, 0, 220)
+            fill_color = (255, 55, 0, 220)
 
         draw.ellipse(bound, fill=fill_color, outline=outline_color)
 
