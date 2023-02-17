@@ -328,7 +328,7 @@ def correction_quality(aois, original_fixations, corrected_fixations):
     results = [0] * total_fixations
     
     for index, fix in enumerate(original_fixations):
-        
+
         for _, row  in aois.iterrows():
             
             if overlap(fix, row) and overlap(corrected_fixations[index], row):
