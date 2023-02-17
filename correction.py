@@ -125,19 +125,35 @@ def error_withinline(regression_probability, fixations):
     for fix in fixations:
         
         x, y, duration = fix[0], fix[1], fix[2]
-        if random.random() < regression_probability:
-            pass
-    
+        results.append(fix) # keep original fixations
+        if random.random() < regression_probability: # and add an additional one with some probability
+            extra_x = random.random() * x
+            extra_y = y
+            extra_duration = duration
+            results.append([extra_x, extra_x, extra_duration])
+
     return results
 
 # between-line regression
 
-def error_betweenline(fixations):
+def error_betweenline(regression_probability, fixations):
     
     results = []
     
-    return results
+    for fix in fixations:
+            
+            x, y, duration = fix[0], fix[1], fix[2]
+            results.append(fix) # keep original fixations
+            if random.random() < regression_probability: # and add an additional line read with some probability
+                reread_xs = [random.random() * x, random.random() * x]
+                reread_y = random.random() * y
+                extra_duration = duration
 
+                # add the left-er fixation first, than the right-er
+                results.append([min(reread_xs), reread_y, extra_duration])
+                results.append([max(reread_xs), reread_y, extra_duration])
+                
+    return results
 
 # droop
 
