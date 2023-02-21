@@ -87,16 +87,36 @@ def error_slope(d_slope, fixations):
     
     results = []
     
+    print(d_slope)
+        
+    min_x = get_minx(fixations)
+    min_y = get_miny(fixations)
+    
     for fix in fixations:
         
         x, y, duration = fix[0], fix[1], fix[2]
 
-        y_error = x * d_slope
+        y_error = (x - min_x) * d_slope
         y_final = y + y_error
         
         results.append([x, y_final, duration])
         
     return results
+
+def get_minx(fixs):
+    m = fixs[0][0]
+    for fix in fixs:
+        m = min(m, fix[0])
+        
+    return m
+
+
+def get_miny(fixs):
+    m = fixs[0][1]
+    for fix in fixs:
+        m = min(m, fix[1])
+        
+    return m
 
 # shift distortion
 
@@ -104,12 +124,14 @@ def error_shift(d_shift, fixations):
     
     results = []
     
+    min_y = get_miny(fixations)
+    
     for fix in fixations:
         
         x, y, duration = fix[0], fix[1], fix[2]
 
         # same as error_slope, except the error grows further down the passage
-        y_error = y * d_shift
+        y_error = (y - min_y) * d_shift
         y_final = y + y_error
         
         results.append([x, y_final, duration])
@@ -122,15 +144,18 @@ def error_withinline(regression_probability, fixations):
     
     results = []
     
+    min_x = get_minx(fixations)
+    min_y = get_miny(fixations)
+    
     for fix in fixations:
         
         x, y, duration = fix[0], fix[1], fix[2]
         results.append(fix) # keep original fixations
         if random.random() < regression_probability: # and add an additional one with some probability
-            extra_x = random.random() * x
+            extra_x = min_x + random.random() * (x - min_x)
             extra_y = y
             extra_duration = duration
-            results.append([extra_x, extra_x, extra_duration])
+            results.append([extra_x, extra_y, extra_duration])
 
     return results
 
@@ -140,13 +165,16 @@ def error_betweenline(regression_probability, fixations):
     
     results = []
     
+    min_x = get_minx(fixations)
+    min_y = get_miny(fixations)
+    
     for fix in fixations:
             
             x, y, duration = fix[0], fix[1], fix[2]
             results.append(fix) # keep original fixations
             if random.random() < regression_probability: # and add an additional line read with some probability
-                reread_xs = [random.random() * x, random.random() * x]
-                reread_y = random.random() * y
+                reread_xs = [min_x + random.random() * (x - min_x), min_x + random.random() * (x - min_x)]
+                reread_y = min_y + random.random() * (y - min_y)
                 extra_duration = duration
 
                 # add the left-er fixation first, than the right-er
@@ -207,7 +235,7 @@ def draw_fixation(Image_file, fixations):
 
         x0, y0 = x, y
 
-    plt.figure(figsize=(17, 15))
+    plt.figure(figsize=(6, 5))
     plt.imshow(np.asarray(im), interpolation='nearest')
 
 
